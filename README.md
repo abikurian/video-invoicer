@@ -40,4 +40,4 @@ Built as **Project #2** of a 90-Day / 30-Project Developer Sprint.
     Open `http://localhost:3000` in your browser.
 
 🌐 Live Demo
-Hosted on Vercel: [Insert your Vercel URL here]
+Hosted on Vercel: (https://video-invoicer-cvyirjkli-abi-kurian-vargheses-projects.vercel.app/)
