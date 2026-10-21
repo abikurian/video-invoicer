@@ -13,6 +13,9 @@ export default function Home() {
     invoiceNumber: "",
     bankDetails: "",
     notes: "",
+    tax: 0,
+    discount: 0,
+    currency: "₹",
   });
 
   const [items, setItems] = useState([
@@ -64,6 +67,9 @@ export default function Home() {
         invoiceNumber: `INV-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000)}`,
         bankDetails: "",
         notes: "",
+        tax: 0,
+        discount: 0,
+        currency: "₹",
       });
       setItems([{ id: Date.now(), description: "", rate: 0, qty: 1 }]);
     }
@@ -214,7 +220,7 @@ export default function Home() {
 
         {/* RIGHT PANEL: LIVE PREVIEW & PRINT OUTPUT */}
         <div className="lg:col-span-7 print:col-span-12 print:w-full">
-          <div className="bg-white text-zinc-900 p-10 rounded-sm shadow-2xl min-h-[700px] print:shadow-none print:p-0 print:min-h-0">
+          <div className="bg-white text-zinc-900 p-10 rounded-lg border border-zinc-200 shadow-2xl min-h-[700px] print:shadow-none print:border-none print:rounded-none print:p-0 print:min-h-0">
             <div className="flex justify-between items-start border-b-2 border-zinc-100 pb-8 mb-8">
               <div>
                 <h2 className="text-4xl font-black text-zinc-950 tracking-tighter">INVOICE</h2>
