@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FileText, Plus, Trash2, Download } from "lucide-react";
 
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
+
   const [details, setDetails] = useState({
     clientName: "Acme Corp",
     projectName: "Fuginiz Promo Video",
@@ -14,6 +16,24 @@ export default function Home() {
     { id: 1, description: "Sony a7 IV + Lenses (Day Rate)", rate: 15000, qty: 1 },
   ]);
 
+  // LOAD SAVED DATA ON MOUNT
+  useEffect(() => {
+    setMounted(true);
+    const savedDetails = localStorage.getItem("invoiceDetails");
+    const savedItems = localStorage.getItem("invoiceItems");
+
+    if (savedDetails) setDetails(JSON.parse(savedDetails));
+    if (savedItems) setItems(JSON.parse(savedItems));
+  }, []);
+
+  // AUTO-SAVE ON EVERY CHANGE
+  useEffect(() => {
+    if (mounted) {
+      localStorage.setItem("invoiceDetails", JSON.stringify(details));
+      localStorage.setItem("invoiceItems", JSON.stringify(items));
+    }
+  }, [details, items, mounted]);
+
   const addItem = () => setItems([...items, { id: Date.now(), description: "", rate: 0, qty: 1 }]);
   const removeItem = (id: number) => setItems(items.filter(item => item.id !== id));
   const updateItem = (id: number, field: string, value: string | number) => {
@@ -21,15 +41,16 @@ export default function Home() {
   };
   const calculateTotal = () => items.reduce((sum, item) => sum + (item.rate * item.qty), 0);
 
-  const handleDownload = () => {
-    window.print();
-  };
+  const handleDownload = () => window.print();
+
+  // Prevent Next.js hydration errors by waiting for the client to mount
+  if (!mounted) return null;
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 p-4 md:p-8 font-sans print:p-0 print:bg-white">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 print:block print:w-full print:max-w-none print:m-0">
 
-        {/* LEFT PANEL: INPUT CONTROLS (Hidden when saving to PDF) */}
+        {/* LEFT PANEL: INPUT CONTROLS */}
         <div className="lg:col-span-5 space-y-6 print:hidden">
           <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
             <div className="flex items-center gap-3">
