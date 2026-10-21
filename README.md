@@ -25,3 +25,19 @@ Built as **Project #2** of a 90-Day / 30-Project Developer Sprint.
 1. Clone the repository:
    ```bash
    git clone [https://github.com/abikurian/video-invoicer.git](https://github.com/abikurian/video-invoicer.git)
+
+2. Navigate to the project directory and install dependencies:
+
+    ```Bash
+    cd video-invoicer
+    npm install
+    ```
+3. Start the development server:
+
+    ```Bash
+    npm run dev
+    ```
+    Open `http://localhost:3000` in your browser.
+
+🌐 Live Demo
+Hosted on Vercel: [Insert your Vercel URL here]
