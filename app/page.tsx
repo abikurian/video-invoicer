@@ -12,6 +12,7 @@ export default function Home() {
     date: "",
     invoiceNumber: "",
     bankDetails: "",
+    notes: "",
   });
 
   const [items, setItems] = useState([
@@ -62,6 +63,7 @@ export default function Home() {
         date: new Date().toISOString().split("T")[0],
         invoiceNumber: `INV-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000)}`,
         bankDetails: "",
+        notes: "",
       });
       setItems([{ id: Date.now(), description: "", rate: 0, qty: 1 }]);
     }
@@ -144,6 +146,16 @@ export default function Home() {
                   placeholder="e.g. Bank Name, A/C No, IFSC, UPI ID..."
                   value={details.bankDetails}
                   onChange={(e) => setDetails({ ...details, bankDetails: e.target.value })}
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+              <div className="col-span-2">
+                <label className="block text-sm text-zinc-400 mb-1">Notes & Terms</label>
+                <textarea
+                  rows={2}
+                  placeholder="e.g. Payment due within 15 days. Thank you for your business!"
+                  value={details.notes}
+                  onChange={(e) => setDetails({ ...details, notes: e.target.value })}
                   className="w-full bg-zinc-950 border border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-indigo-500"
                 />
               </div>
@@ -246,11 +258,17 @@ export default function Home() {
             </div>
 
             <div className="flex flex-col sm:flex-row justify-between items-start gap-6 mt-8">
-              <div className="w-full sm:w-1/2 text-xs text-zinc-600">
+              <div className="w-full sm:w-1/2 space-y-4">
                 {details.bankDetails && (
-                  <div>
+                  <div className="text-xs text-zinc-600">
                     <p className="font-semibold text-zinc-900 mb-1 uppercase tracking-wider text-[11px]">Bank & Payment Details</p>
                     <p className="whitespace-pre-line leading-relaxed">{details.bankDetails}</p>
+                  </div>
+                )}
+                {details.notes && (
+                  <div className="text-xs text-zinc-500">
+                    <p className="font-semibold text-zinc-700 mb-1 uppercase tracking-wider text-[10px]">Notes & Terms</p>
+                    <p className="whitespace-pre-line leading-relaxed">{details.notes}</p>
                   </div>
                 )}
               </div>
