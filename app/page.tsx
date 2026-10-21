@@ -9,7 +9,7 @@ export default function Home() {
   const [details, setDetails] = useState({
     clientName: "Acme Corp",
     projectName: "Fuginiz Promo Video",
-    date: new Date().toISOString().split("T")[0],
+    date: "", // Fixed: Removed dynamic Date() for Vercel static build
   });
 
   const [items, setItems] = useState([
@@ -22,7 +22,13 @@ export default function Home() {
     const savedDetails = localStorage.getItem("invoiceDetails");
     const savedItems = localStorage.getItem("invoiceItems");
 
-    if (savedDetails) setDetails(JSON.parse(savedDetails));
+    if (savedDetails) {
+      setDetails(JSON.parse(savedDetails));
+    } else {
+      // Fixed: Apply today's date safely on the client side
+      setDetails(prev => ({ ...prev, date: new Date().toISOString().split("T")[0] }));
+    }
+
     if (savedItems) setItems(JSON.parse(savedItems));
   }, []);
 
@@ -43,7 +49,6 @@ export default function Home() {
 
   const handleDownload = () => window.print();
 
-  // Prevent Next.js hydration errors by waiting for the client to mount
   if (!mounted) return null;
 
   return (
