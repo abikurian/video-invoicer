@@ -1,19 +1,20 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FileText, Plus, Trash2, Download } from "lucide-react";
+import { FileText, Plus, Trash2, Download, RotateCcw } from "lucide-react";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
 
   const [details, setDetails] = useState({
-    clientName: "Acme Corp",
-    projectName: "Fuginiz Promo Video",
-    date: "", // Fixed: Removed dynamic Date() for Vercel static build
+    clientName: "",
+    projectName: "",
+    date: "",
+    invoiceNumber: "",
   });
 
   const [items, setItems] = useState([
-    { id: 1, description: "Sony a7 IV + Lenses (Day Rate)", rate: 15000, qty: 1 },
+    { id: 1, description: "", rate: 0, qty: 1 },
   ]);
 
   // LOAD SAVED DATA ON MOUNT
@@ -25,8 +26,11 @@ export default function Home() {
     if (savedDetails) {
       setDetails(JSON.parse(savedDetails));
     } else {
-      // Fixed: Apply today's date safely on the client side
-      setDetails(prev => ({ ...prev, date: new Date().toISOString().split("T")[0] }));
+      setDetails(prev => ({
+        ...prev,
+        date: new Date().toISOString().split("T")[0],
+        invoiceNumber: `INV-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000)}`
+      }));
     }
 
     if (savedItems) setItems(JSON.parse(savedItems));
@@ -49,6 +53,18 @@ export default function Home() {
 
   const handleDownload = () => window.print();
 
+  const resetInvoice = () => {
+    if (confirm("Clear all invoice data?")) {
+      setDetails({
+        clientName: "",
+        projectName: "",
+        date: new Date().toISOString().split("T")[0],
+        invoiceNumber: `INV-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000)}`,
+      });
+      setItems([{ id: Date.now(), description: "", rate: 0, qty: 1 }]);
+    }
+  };
+
   if (!mounted) return null;
 
   return (
@@ -62,41 +78,63 @@ export default function Home() {
               <FileText className="text-indigo-500 w-6 h-6" />
               <h1 className="text-2xl font-bold tracking-tight">Invoice Builder</h1>
             </div>
-            <button
-              onClick={handleDownload}
-              className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-colors"
-            >
-              <Download className="w-4 h-4" /> Export PDF
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={resetInvoice}
+                className="bg-zinc-800 hover:bg-zinc-700 text-white px-3 py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-colors"
+                title="Reset Invoice"
+              >
+                <RotateCcw className="w-4 h-4" />
+              </button>
+              <button
+                onClick={handleDownload}
+                className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-colors"
+              >
+                <Download className="w-4 h-4" /> Export
+              </button>
+            </div>
           </div>
 
           <div className="space-y-4 bg-zinc-900 p-6 rounded-xl border border-zinc-800">
-            <div>
-              <label className="block text-sm text-zinc-400 mb-1">Client Name</label>
-              <input
-                type="text"
-                value={details.clientName}
-                onChange={(e) => setDetails({ ...details, clientName: e.target.value })}
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-indigo-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-zinc-400 mb-1">Project Title</label>
-              <input
-                type="text"
-                value={details.projectName}
-                onChange={(e) => setDetails({ ...details, projectName: e.target.value })}
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-indigo-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-zinc-400 mb-1">Date</label>
-              <input
-                type="date"
-                value={details.date}
-                onChange={(e) => setDetails({ ...details, date: e.target.value })}
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-indigo-500"
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="col-span-2">
+                <label className="block text-sm text-zinc-400 mb-1">Invoice Number</label>
+                <input
+                  type="text"
+                  value={details.invoiceNumber}
+                  onChange={(e) => setDetails({ ...details, invoiceNumber: e.target.value })}
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 font-mono"
+                />
+              </div>
+              <div className="col-span-2">
+                <label className="block text-sm text-zinc-400 mb-1">Client Name</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Acme Corp"
+                  value={details.clientName}
+                  onChange={(e) => setDetails({ ...details, clientName: e.target.value })}
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+              <div className="col-span-2">
+                <label className="block text-sm text-zinc-400 mb-1">Project Title</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Q4 Marketing Campaign"
+                  value={details.projectName}
+                  onChange={(e) => setDetails({ ...details, projectName: e.target.value })}
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+              <div className="col-span-2">
+                <label className="block text-sm text-zinc-400 mb-1">Date</label>
+                <input
+                  type="date"
+                  value={details.date}
+                  onChange={(e) => setDetails({ ...details, date: e.target.value })}
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-indigo-500"
+                />
+              </div>
             </div>
           </div>
 
@@ -115,7 +153,7 @@ export default function Home() {
                   <div className="flex-1 space-y-2">
                     <input
                       type="text"
-                      placeholder="Description"
+                      placeholder="Item description..."
                       value={item.description}
                       onChange={(e) => updateItem(item.id, 'description', e.target.value)}
                       className="w-full bg-zinc-900 border border-zinc-700 rounded px-2 py-1 text-sm focus:outline-none focus:border-indigo-500"
@@ -125,7 +163,7 @@ export default function Home() {
                         <label className="block text-xs text-zinc-500 mb-1">Rate (₹)</label>
                         <input
                           type="number"
-                          value={item.rate}
+                          value={item.rate || ""}
                           onChange={(e) => updateItem(item.id, 'rate', Number(e.target.value))}
                           className="w-full bg-zinc-900 border border-zinc-700 rounded px-2 py-1 text-sm focus:outline-none focus:border-indigo-500"
                         />
@@ -134,7 +172,7 @@ export default function Home() {
                         <label className="block text-xs text-zinc-500 mb-1">Qty</label>
                         <input
                           type="number"
-                          value={item.qty}
+                          value={item.qty || ""}
                           onChange={(e) => updateItem(item.id, 'qty', Number(e.target.value))}
                           className="w-full bg-zinc-900 border border-zinc-700 rounded px-2 py-1 text-sm focus:outline-none focus:border-indigo-500"
                         />
@@ -156,7 +194,7 @@ export default function Home() {
             <div className="flex justify-between items-start border-b-2 border-zinc-100 pb-8 mb-8">
               <div>
                 <h2 className="text-4xl font-black text-zinc-950 tracking-tighter">INVOICE</h2>
-                <p className="text-sm text-zinc-500 mt-1">INV-{new Date().getFullYear()}-{Math.floor(Math.random() * 1000)}</p>
+                <p className="text-sm text-zinc-500 mt-1">{details.invoiceNumber}</p>
               </div>
               <div className="text-right text-sm space-y-1">
                 <p className="font-bold text-zinc-900">Abi Kurian Varghese</p>
