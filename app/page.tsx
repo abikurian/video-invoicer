@@ -11,6 +11,7 @@ export default function Home() {
     projectName: "",
     date: "",
     invoiceNumber: "",
+    bankDetails: "",
   });
 
   const [items, setItems] = useState([
@@ -24,7 +25,7 @@ export default function Home() {
     const savedItems = localStorage.getItem("invoiceItems");
 
     if (savedDetails) {
-      setDetails(JSON.parse(savedDetails));
+      setDetails(prev => ({ ...prev, ...JSON.parse(savedDetails) }));
     } else {
       setDetails(prev => ({
         ...prev,
@@ -60,6 +61,7 @@ export default function Home() {
         projectName: "",
         date: new Date().toISOString().split("T")[0],
         invoiceNumber: `INV-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000)}`,
+        bankDetails: "",
       });
       setItems([{ id: Date.now(), description: "", rate: 0, qty: 1 }]);
     }
@@ -132,6 +134,16 @@ export default function Home() {
                   type="date"
                   value={details.date}
                   onChange={(e) => setDetails({ ...details, date: e.target.value })}
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+              <div className="col-span-2">
+                <label className="block text-sm text-zinc-400 mb-1">Bank & Payment Details</label>
+                <textarea
+                  rows={3}
+                  placeholder="e.g. Bank Name, A/C No, IFSC, UPI ID..."
+                  value={details.bankDetails}
+                  onChange={(e) => setDetails({ ...details, bankDetails: e.target.value })}
                   className="w-full bg-zinc-950 border border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-indigo-500"
                 />
               </div>
@@ -233,7 +245,15 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="flex justify-end mt-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-6 mt-8">
+              <div className="w-full sm:w-1/2 text-xs text-zinc-600">
+                {details.bankDetails && (
+                  <div>
+                    <p className="font-semibold text-zinc-900 mb-1 uppercase tracking-wider text-[11px]">Bank & Payment Details</p>
+                    <p className="whitespace-pre-line leading-relaxed">{details.bankDetails}</p>
+                  </div>
+                )}
+              </div>
               <div className="w-full sm:w-1/2 bg-zinc-50 p-4 rounded-lg print:bg-transparent print:border print:border-zinc-200">
                 <div className="flex justify-between items-center text-lg font-black">
                   <span>Total</span>
